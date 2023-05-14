@@ -1,7 +1,4 @@
-using System;
-using System.IO;
-using System.Text.Json;
-using Dungeon;
+using Addressable;
 using EncounterTester.Data;
 using EncounterTester.UI;
 using Il2CppInterop.Runtime.Injection;
@@ -26,7 +23,10 @@ namespace EncounterTester
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F10) && StaticDataManager.Instance is {IsDataLoaded:true})
+            if (Input.GetKeyDown(KeyCode.F10) && 
+                StaticDataManager.Instance is {IsDataLoaded:true} && 
+                TextDataManager.Instance is {IsLoadedRemote:true} &&
+                !AddressableManager.Instance.IsLocalizeDataLoading())
             {
                 EncounterPanel.Instance ??= new EncounterPanel(Plugin.UiBase);
                 EncounterPanel.IsShown = !EncounterPanel.IsShown;

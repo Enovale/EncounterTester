@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using EncounterTester.Data;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,18 +14,31 @@ namespace EncounterTester.UI
         
         public delegate void EncounterSelectedDelegate(EncounterCell data, int index);
 
-        public int ItemCount => EncounterHelper.RailwayEncounters.Count;
+        private List<EncounterData> _encounterList = new();
+
+        public ReadOnlyCollection<EncounterData> EncounterList
+            => _encounterList.AsReadOnly();
+
+        public int ItemCount => _encounterList.Count;
 
         public float DefaultHeight => 30;
+
+        private ScrollPool<EncounterCell> _pool;
 
         public void ConstructContent(GameObject contentRoot)
         {
             var root = UIFactory.CreateUIObject(GetType().Name, contentRoot);
             UIFactory.SetLayoutElement(root, flexibleWidth: 9999, flexibleHeight: 9999);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(root, false, false, true, true);
-            var pool = UIFactory.CreateScrollPool<EncounterCell>(root, "encounterScrollPool", out var scrollRoot, out var addContent);
+            _pool = UIFactory.CreateScrollPool<EncounterCell>(root, "encounterScrollPool", out var scrollRoot, out var addContent);
             UIFactory.SetLayoutElement(scrollRoot, flexibleWidth:9999, flexibleHeight: 9999);
-            pool.Initialize(this);
+            _pool.Initialize(this);
+        }
+
+        public void UpdateCells(List<EncounterData> staticDataList)
+        {
+            _encounterList = staticDataList;
+            _pool.Refresh(true, true);
         }
 
         public void OnCellBorrowed(EncounterCell cell) { }
@@ -37,14 +52,9 @@ namespace EncounterTester.UI
             }
 
             cell.Index = index;
-            cell.Label = EncounterHelper.GetEncounterName(index);
-            cell.OnEdit += (d, i) => OnEncounterSelected?.Invoke(d, i);
-            cell.OnExecute += (d, i) => EncounterHelper.ExecuteEncounter(new EncounterData()
-            {
-                StageData = EncounterHelper.RailwayEncounters[i],
-                StageType = STAGE_TYPE.RAILWAY_DUNGEON,
-                ProgressType = STAGE_PROGRESS_TYPE.RAILWAY_DUNGEON_AB_BATTLE
-            });
+            cell.Label = EncounterHelper.GetEncounterName(_encounterList, index);
+            cell.OnEdit = (d, i) => OnEncounterSelected?.Invoke(d, i);
+            cell.OnExecute = (d, i) => EncounterHelper.ExecuteEncounter(_encounterList[i]);
         }
     }
 }

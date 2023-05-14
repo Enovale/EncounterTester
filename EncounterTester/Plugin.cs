@@ -6,7 +6,6 @@ using EncounterTester.Patches;
 using EncounterTester.UI;
 using HarmonyLib;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UniverseLib;
 using UniverseLib.Config;
 using UniverseLib.UI;
@@ -35,8 +34,6 @@ namespace EncounterTester
             var harmony = new Harmony($"com.enovale.{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll(typeof(BanPrevention));
             harmony.PatchAll(typeof(Cheats));
-
-            SceneManager.sceneLoaded += (Action<Scene, LoadSceneMode>)(BanPrevention.SceneLoaded);
 
             Universe.Init(3f, OnInitialized, UniverseLog, new UniverseLibConfig()
             {

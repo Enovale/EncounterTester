@@ -1,6 +1,5 @@
+using System;
 using HarmonyLib;
-using Server;
-using UnityEngine.SceneManagement;
 
 namespace EncounterTester.Patches
 {
@@ -14,17 +13,9 @@ namespace EncounterTester.Patches
         {
             if (SafeMode)
             {
-                GlobalGameManager.Instance.LoadScene(SCENE_STATE.Main);
+                GlobalGameManager.Instance.LoadScene(SCENE_STATE.Main, (Action)(() => SafeMode = false));
             }
             return !SafeMode;
-        }
-        
-        public static void SceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            if (GlobalGameManager.Instance is {sceneState: SCENE_STATE.Main})
-            {
-                SafeMode = false;
-            }
         }
     }
 }

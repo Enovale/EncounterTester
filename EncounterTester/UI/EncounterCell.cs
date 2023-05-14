@@ -1,5 +1,3 @@
-using System;
-using EncounterTester.Data;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
@@ -23,9 +21,9 @@ namespace EncounterTester.UI
             set => _label.text = value;
         }
 
-        public event EncounterSelector.EncounterSelectedDelegate OnEdit;
+        public EncounterSelector.EncounterSelectedDelegate OnEdit;
         
-        public event EncounterSelector.EncounterSelectedDelegate OnExecute;
+        public EncounterSelector.EncounterSelectedDelegate OnExecute;
 
         public float DefaultHeight => 30;
 

@@ -1,7 +1,5 @@
 using System.Linq;
-using Il2CppSystem.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UniverseLib.UI;
 using UniverseLib.UI.Panels;
 
@@ -48,13 +46,27 @@ namespace EncounterTester.UI
 
         protected override void ConstructPanelContent()
         {
-            var group = UIFactory.CreateHorizontalGroup(ContentRoot, GetType().Name, false, false, true, true);
+            var vertGroup = UIFactory.CreateVerticalGroup(ContentRoot, GetType().Name, false, false, true, true);
+            UIFactory.SetLayoutElement(vertGroup, flexibleWidth: 9999, flexibleHeight: 9999);
+
+            var selectGroup = UIFactory.CreateHorizontalGroup(vertGroup, "selectGroup", false, true, true, false);
+            UIFactory.SetLayoutElement(selectGroup, flexibleWidth: 9999, minHeight: 28, flexibleHeight: 0);
+            var dropdownObj = UIFactory.CreateDropdown(selectGroup, "encounterListDropdown", out var dropdown, "ERROR",
+                12,
+                i =>
+                {
+                    _encounterSelector.UpdateCells(EncounterHelper.EncounterLists[i].Data);
+                }, EncounterHelper.EncounterLists.Select(e => e.Name).ToArray());
+            UIFactory.SetLayoutElement(dropdownObj, flexibleWidth: 9999, flexibleHeight: 9999);
+            
+            var group = UIFactory.CreateHorizontalGroup(vertGroup, "horizontalGroup", false, false, true, true);
             UIFactory.SetLayoutElement(group, flexibleWidth: 9999, flexibleHeight: 9999);
             _encounterSelector = new();
             _encounterSelector.ConstructContent(group);
             _encounterDetails = new();
             _encounterDetails.ConstructUI(group);
-            _encounterSelector.OnEncounterSelected += (data, i) => _encounterDetails.UpdateUI(EncounterHelper.RailwayEncounters[i]);
+            _encounterSelector.UpdateCells(EncounterHelper.EncounterLists.First().Data);
+            _encounterSelector.OnEncounterSelected += (data, i) => _encounterDetails.UpdateUI(_encounterSelector.EncounterList[i]);
         }
     }
 }

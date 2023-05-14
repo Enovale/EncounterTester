@@ -1,4 +1,5 @@
 using System;
+using EncounterTester.Data;
 using Il2CppSystem.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,21 +47,21 @@ namespace EncounterTester.UI
             _onUiUpdated += () => dropdown.value = (int)_data._stageType;
         }
 
-        public void UpdateUI(StageStaticData data)
+        public void UpdateUI(EncounterData data)
         {
-            _data = data;
+            _data = data.StageData;
             _onUiUpdated?.Invoke();
         }
 
         private InputFieldRef CreateInputFieldWithLabel(GameObject parent, string name, string placeholderText, string label, InputField.ContentType contentType = InputField.ContentType.Standard)
         {
             var group = UIFactory.CreateHorizontalGroup(parent, name + "Group", false, false, true, true);
-            UIFactory.SetLayoutElement(group.gameObject, flexibleWidth: 80, minHeight: 25, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(group.gameObject, flexibleWidth: 99999999, minHeight: 25, flexibleHeight: 0);
             var labelObj = UIFactory.CreateLabel(group, name + "Label", label);
             labelObj.alignment = TextAnchor.MiddleCenter;
-            UIFactory.SetLayoutElement(labelObj.gameObject, flexibleWidth: 30, minHeight: 25, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(labelObj.gameObject, flexibleWidth: 99999, minHeight: 25, flexibleHeight: 0);
             var inputField = UIFactory.CreateInputField(group, name, placeholderText);
-            UIFactory.SetLayoutElement(inputField.GameObject, flexibleWidth: 50, minHeight: 25, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(inputField.GameObject, minWidth: 180, minHeight: 25, flexibleHeight: 0);
 
             inputField.Component.contentType = contentType;
             return inputField;
