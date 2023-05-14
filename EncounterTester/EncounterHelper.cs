@@ -15,6 +15,8 @@ namespace EncounterTester
 
         static EncounterHelper()
         {
+            var uiList = TextDataManager.Instance.UIList;
+            
             // Story Data
             foreach (var chapterData in StaticDataManager.Instance.partList.list)
             {
@@ -24,7 +26,7 @@ namespace EncounterTester
                     var subChapterName = TextDataManager.Instance.stageChapter.GetData($"chapter_{subchapterData.Region}_{subchapterData.ID}")
                         .GetChapterTitle();
                     var encounterData = new List<EncounterData>();
-                    var name = $"Story {chapterData.SprName} - {chapterName} - {subChapterName}";
+                    var name = $"{uiList.GetText("STORY")} {chapterData.SprName} - {chapterName} - {subChapterName}";
                     EncounterLists.Add(new(name, encounterData));
                     foreach (var stageNodeInfo in subchapterData.StageNodeList)
                     {
@@ -102,7 +104,6 @@ namespace EncounterTester
             // EXP Luxcavation
             var expList = StaticDataManager.Instance.ExpDungeonBattleList.GetList().ToArray();
             var expEncounters = new List<EncounterData>();
-            var uiList = TextDataManager.Instance.UIList;
             EncounterLists.Add(new(uiList.GetText("enter_exp_dungeon"), expEncounters));
             for (var i = 0; i < expList.Count; i++)
             {
@@ -139,7 +140,7 @@ namespace EncounterTester
             var railwayList = StaticDataManager.Instance.RailwayDungeonDataList.GetList().ToArray();
             foreach (var railwayDungeonData in railwayList)
             {
-                var data = ($"Railway: {TextDataManager.Instance.RailwayDungeonText.GetData(railwayDungeonData.ID).GetName()}", new List<EncounterData>());
+                var data = (string.Format(uiList.GetText("mirror_refraction_railway_with_dungeon_name"), TextDataManager.Instance.RailwayDungeonText.GetData(railwayDungeonData.ID).GetName()), new List<EncounterData>());
                 foreach (var dungeonSector in railwayDungeonData.Sector)
                 {
                     data.Item2.Add(new()
