@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
@@ -26,21 +27,20 @@ namespace EncounterTester
 
         public override void Load()
         {
-            // Plugin startup logic
-            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
-
             Initialize();
 
             var harmony = new Harmony($"com.enovale.{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll(typeof(BanPrevention));
             harmony.PatchAll(typeof(Cheats));
 
-            Universe.Init(3f, OnInitialized, UniverseLog, new UniverseLibConfig()
+            Universe.Init(5f, OnInitialized, UniverseLog, new UniverseLibConfig()
             {
                 Disable_EventSystem_Override = true,
                 Force_Unlock_Mouse = true,
-                Unhollowed_Modules_Folder = "interop"
+                Unhollowed_Modules_Folder = Path.Combine(Paths.BepInExRootPath, "interop")
             });
+            
+            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
         }
 
         private void UniverseLog(string arg1, LogType arg2)
